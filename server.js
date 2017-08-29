@@ -1,34 +1,18 @@
-var path = require('path');
-var express = require('express');
+'use strict';
+
 var socketio = require('socket.io');
+var config = require('./config/config');
+var mongoose = require('mongoose');
 
-var app = express();
-var staticPath = path.join(__dirname, '/public');
-var port = 8000;
-var counter = 1;
-app.use(express.static(staticPath));
+var dbOpts = {
+    uri: 'mongodb://www:Password1@192.168.88.149/swm'
+};
+var serverPort = 8000;
 
-const server = app.listen(port, function(err) {
-    if(err) {
-        console.log(err);
-    }
-    console.log(`Listening on port ${port}`);
-});
+var db = mongoose.connect(dbOpts.uri);
 
-var io = socketio.listen(server);
+var app = require('./config/express')(db);
 
-io.of('/counter').on('connection', function(socket) {
-    console.log('Got connection from '+socket.client.conn.remoteAddress);
-});
-app.set('socketio', io);
-app.set('server', server);
+app.get('server').listen(serverPort);
 
-setInterval(function() {
-    var data = {
-        counter: counter 
-    };
-    console.log('EMITTING...');
-    console.log(data);
-    io.of('/counter').emit('api.v1.test', data);
-    counter++;
-},10000);
+exports = module.exports = app;
