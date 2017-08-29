@@ -5,7 +5,7 @@ var config = require('./config/config');
 var mongoose = require('mongoose');
 
 var dbOpts = {
-    uri: 'mongodb://www:Password1@192.168.88.149/swm'
+    uri: 'mongodb://www:Password1@127.0.0.1/swm'
 };
 var serverPort = 8000;
 
